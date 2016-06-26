@@ -1,0 +1,12 @@
+Staus : NOERROR 
+Opcode: QUERYgoogle.com. 300 IN A 74.125.29.101
+google.com. 300 IN A 74.125.29.102
+google.com. 300 IN A 74.125.29.138
+google.com. 300 IN A 74.125.29.100
+google.com. 300 IN A 74.125.29.113
+google.com. 300 IN A 74.125.29.139
+Id: 11790 	flags: QR AA RD
+Number of questions : 1	Number of answers : 6
+Number of Authority : 0	Number of Additional:0
+ Question: [<DNS google.com. IN A RRset>]
+Querytime: 0.306884050369 msec

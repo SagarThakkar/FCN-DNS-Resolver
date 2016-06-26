@@ -1,0 +1,28 @@
+I have used the DNSPython API and libraries like 
+DNS.query
+DNS.resolver
+DNS.name
+DNS.rcode
+DNS.message
+DNS.opcode
+DNS.flags
+----------------------------------------------------------------
+
+The Program has DNS Resolver which iteratively resolves the authority server of the domain name requested by the user in the main function.
+
+For Dig implementation the dig first calls the resolver function and obtains the name server and the corresponding resolution of the type is done in the mydig file.
+
+---------------------------------------------------------------------
+
+How to run your program:
+The folder has two files mydnsresolver.py and mydig.py
+
+The dns resolver works by typing python mydnsresolver.py "<example.com>"on the command prompt and the output shall be printed on the command shell.
+
+The dig file will work using python mydig.py "<example.com>" "<Type>"
+
+
+-------------------------------------------------------------------
+
+Source: Stack Overflow , DNSPython APIs , DNS Python Google groups , Sriram Venkatakrishna Rao.
+

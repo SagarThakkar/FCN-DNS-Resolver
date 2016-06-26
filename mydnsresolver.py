@@ -1,0 +1,102 @@
+import re
+import dns
+import dns.name
+import dns.query
+import dns.resolver
+import time
+import random
+
+
+starttime=0
+def get_authoritative_nameserver(domain,nsrecieved=False): 
+	nameserver =	["198.41.0.4","192.228.79.201", 			 				 				"192.33.4.12","199.7.91.13",
+			"192.203.230.10","192.5.5.241",
+			"192.112.36.4","198.97.190.53",
+			"192.36.148.17","192.58.128.30",
+			"193.0.14.129","199.7.83.42","202.12.27.33"]	
+	global starttime   cd 
+	starttime=time.time()
+	n = dns.name.from_text(domain)
+	i=0
+	
+	default = dns.resolver.get_default_resolver()
+	default.timeout=1
+	gotip=False
+	while i <len(nameserver):    
+		ns=nameserver[i]
+		last = False
+		deep = 2	
+		while not last:
+			s = n.split(deep)
+	#		print s[0].to_unicode()
+			last = s[0].to_unicode() == u'@'
+			sub = s[1]
+
+			print "Looking up %s on %s" % (sub, ns)
+			query = dns.message.make_query(sub, dns.rdatatype.NS)
+			response = dns.query.udp(query, ns)
+			#print response
+
+			rcode = response.rcode()
+			if rcode != dns.rcode.NOERROR:
+				if rcode == dns.rcode.NXDOMAIN:
+					return None
+				else:
+					return None
+
+			rrset = None
+			if len(response.authority) > 0:
+
+				rrset = response.authority[random.randint(0,len(response.authority)-1)]#response.authority[0]
+			else:
+				
+				rrset = response.answer[random.randint(0,len(response.answer)-1)]#response.answer[0]
+
+			rr = rrset[0]
+			if rr.rdtype == dns.rdatatype.SOA:
+				print('Same server is authoritative for %s' % sub)
+			else:
+				authority = rr.target
+			
+				print('%s is authoritative for %s' % (authority, sub))
+				ns = default.query(authority).rrset[0].to_text()
+				print("nameserver = {}".format(ns))
+				
+					
+				query = dns.message.make_query(n, dns.rdatatype.A)
+				try:
+					response = dns.query.udp(query,ns,timeout=5)
+					for i in response.answer:
+						print i
+						gotip=True
+						
+				except dns.exception.Timeout:
+					print "timeout"
+					last=False
+					gotip=False	
+					break
+						
+			deep += 1
+		if gotip:
+			return ns
+		else:
+			continue
+
+
+import sys
+
+if __name__=="__main__":
+	#nameserver = "127.0.1.1"
+	dn = sys.argv[1] #dn = domain
+	print dn 
+	match = re.search(r'(\w+\.\w+)|(\w+\.\w+\.\w+) | (\w+.\w+.\w+.\w+)',dn,re.DOTALL)
+	if not match:
+		sys.exit("Invalid address")
+	try:			
+		if get_authoritative_nameserver(dn):	
+			print("total time taken: {0:.2f} msecs".format(time.time()-starttime))		
+	
+	except KeyboardInterrupt:
+		sys.exit("\nuser pressed ctrl + C ")
+
+
